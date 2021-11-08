@@ -1,8 +1,9 @@
-###################################################
+####################################################
 # AWS provider configuration                       #
 ####################################################
 provider "aws" {
-  region  = var.default_region
+  region = var.default_region
+  //  profile = "default"
 }
 
 
@@ -41,6 +42,7 @@ terraform {
 
 
   backend "s3" {
+    //    profile = "default"
     region  = "us-east-1"
     encrypt = "true"
   }
