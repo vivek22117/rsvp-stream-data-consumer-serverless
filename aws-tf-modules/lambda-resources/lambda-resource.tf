@@ -4,8 +4,8 @@
 resource "aws_s3_bucket_object" "rsvp_lambda_package" {
   bucket = data.terraform_remote_state.s3_buckets.outputs.artifactory_s3_name
   key    = var.rsvp_lambda_bucket_key
-  source = "${path.module}/../../rsvp-processor-lambda/target/rsvp-processor-lambda.zip"
-  etag   = filemd5("${path.module}/../../rsvp-processor-lambda/target/rsvp-processor-lambda.zip")
+  source = "${path.module}/../../rsvp-consumer-lambda/target/rsvp-consumer-lambda.zip"
+  etag   = filemd5("${path.module}/../../rsvp-consumer-lambda/target/rsvp-consumer-lambda.zip")
 }
 
 resource "aws_lambda_function" "rsvp_lambda_processor" {
@@ -19,7 +19,7 @@ resource "aws_lambda_function" "rsvp_lambda_processor" {
   s3_bucket = aws_s3_bucket_object.rsvp_lambda_package.bucket
   s3_key    = aws_s3_bucket_object.rsvp_lambda_package.key
 
-  source_code_hash = filebase64sha256("${path.module}/../../rsvp-processor-lambda/target/rsvp-processor-lambda.zip")
+  source_code_hash = filebase64sha256("${path.module}/../../rsvp-consumer-lambda/target/rsvp-consumer-lambda.zip")
   role             = aws_iam_role.rsvp_lambda_role.arn
 
   memory_size = var.rsvp_lambda_memory
@@ -33,7 +33,7 @@ resource "aws_lambda_function" "rsvp_lambda_processor" {
     }
   }
 
-  tags = merge(local.common_tags, map("Name", "${var.environment}-rsvp-processor"))
+  tags = merge(local.common_tags, map("Name", "${var.environment}-rsvp-consumer"))
 }
 
 resource "aws_lambda_event_source_mapping" "kinesis_lambda_event_mapping" {
