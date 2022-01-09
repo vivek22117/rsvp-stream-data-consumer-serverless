@@ -18,6 +18,7 @@ on:
 env:
   tf_version: '0.13.5'
   tf_working_dir_app: './deployment/lambda-resources/'
+  maven_dir: './rsvp-consumer-lambda/'
   aws_region: 'us-east-1'
   environment: ${{ github.event.inputs.env }}
 
@@ -39,6 +40,19 @@ jobs:
       # Checkout the repository to the GitHub Actions runner
       - name: Checkout
         uses: actions/checkout@v2
+
+      # Setup JDK8
+      - name: Set up JDK 1.8
+        uses: actions/setup-java@v2
+        with:
+          java-version: '8'
+          distribution: 'adopt'
+
+      # Build Maven Project
+      - name: Build Maven Project
+        if: github.event.inputs.action == 'Create'
+        working-directory: ${{ env.maven_dir }}
+        run: mvn clean install -Dintegration-tests.skip=true
 
       #  Configure AWS Credentials using IAM Role in the GitHub secrets
       - name: AWS IAM Assume Role
