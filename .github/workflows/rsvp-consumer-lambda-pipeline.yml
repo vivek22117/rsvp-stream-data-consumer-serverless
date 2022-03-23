@@ -50,7 +50,6 @@ jobs:
 
       # Build Maven Project
       - name: Build Maven Project
-        if: github.event.inputs.action == 'Create'
         working-directory: ${{ env.maven_dir }}
         run: mvn clean install -Dintegration-tests.skip=true
 
